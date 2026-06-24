@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>🎵 幼儿音乐欣赏 · 复习助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f8f4f0;
+            color: #2c3e4f;
+            padding: 0 12px 40px;
+            min-height: 100vh;
+        }
+
+        .app-header {
+            max-width: 1200px;
+            margin: 0 auto 20px;
+            padding: 16px 0 12px;
+            border-bottom: 2px solid #e8ddd0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .app-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #7a4a3a;
+            letter-spacing: 1px;
+        }
+        .app-header h1 span {
+            font-weight: 300;
+            color: #b28b7a;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-radius: 30px;
+            padding: 4px 14px 4px 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e0d6cc;
+        }
+        .search-box input {
+            border: none;
+            outline: none;
+            padding: 8px 0;
+            font-size: 14px;
+            width: 160px;
+            background: transparent;
+            color: #2c3e4f;
+        }
+        .search-box input::placeholder {
+            color: #b8a99c;
+        }
+        .search-box button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #7a4a3a;
+            padding: 4px 0 4px 10px;
+        }
+
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-width: 1200px;
+            margin: 0 auto 16px;
+        }
+        .category-tabs button {
+            padding: 6px 16px;
+            border-radius: 30px;
+            border: 1.5px solid #dccfc4;
+            background: #fff;
+            color: #5a4a3e;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .category-tabs button:hover {
+            background: #f0e8e0;
+        }
+        .category-tabs button.active {
+            background: #7a4a3a;
+            color: #fff;
+            border-color: #7a4a3a;
+        }
+
+        .stats {
+            max-width: 1200px;
+            margin: 0 auto 14px;
+            font-size: 14px;
+            color: #7a6a5e;
+        }
+        .stats strong {
+            color: #7a4a3a;
+        }
+
+        .card-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 16px;
+        }
+
+        .music-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            padding: 16px 18px 18px;
+            transition: transform 0.15s, box-shadow 0.2s;
+            border: 1px solid #eee6de;
+            display: flex;
+            flex-direction: column;
+        }
+        .music-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #3d2c22;
+            line-height: 1.3;
+        }
+        .card-badge {
+            background: #efe6de;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #6a5244;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .card-composer {
+            font-size: 13px;
+            color: #7a6a5e;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .card-composer .label {
+            color: #b09a8a;
+            font-weight: 400;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin: 4px 0 8px;
+        }
+        .card-tags span {
+            background: #f2ece6;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            color: #5a4a3e;
+        }
+
+        .card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 2px;
+        }
+        .card-actions button {
+            background: none;
+            border: none;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+            background: #f4efe9;
+            padding: 4px 14px;
+            border-radius: 30px;
+            border: 1px solid #e0d6cc;
+        }
+        .card-actions .btn-style {
+            color: #7a4a3a;
+        }
+        .card-actions .btn-style:hover {
+            background: #7a4a3a;
+            color: #fff;
+            border-color: #7a4a3a;
+        }
+        .card-actions .btn-detail {
+            color: #3a6a7a;
+        }
+        .card-actions .btn-detail:hover {
+            background: #3a6a7a;
+            color: #fff;
+            border-color: #3a6a7a;
+        }
+
+        .card-detail {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1.5px dashed #e8ddd0;
+            display: none;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #3d3a36;
+        }
+        .card-detail.open {
+            display: block;
+        }
+
+        .detail-item {
+            margin-bottom: 4px;
+            display: flex;
+            gap: 4px;
+        }
+        .detail-item .d-label {
+            font-weight: 600;
+            color: #6a5244;
+            flex-shrink: 0;
+            min-width: 50px;
+        }
+        .detail-item .d-value {
+            color: #3d3a36;
+        }
+
+        .card-advanced {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1.5px dashed #d0dce0;
+            display: none;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #2a3a44;
+            background: #f7fafc;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border-left: 4px solid #3a6a7a;
+        }
+        .card-advanced.open {
+            display: block;
+        }
+        .card-advanced p {
+            margin-bottom: 8px;
+        }
+        .card-advanced .adv-label {
+            font-weight: 700;
+            color: #1a4a5a;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        .card-advanced .adv-text {
+            color: #2c3e4f;
+        }
+
+        .card-links {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .card-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #f2ece6;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            color: #4a3a32;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+            border: 1px solid #e0d6cc;
+        }
+        .card-links a:hover {
+            background: #7a4a3a;
+            color: #fff;
+            border-color: #7a4a3a;
+        }
+
+        .card-links .local-hint {
+            font-size: 12px;
+            color: #b09a8a;
+            background: #f8f4f0;
+            padding: 4px 12px;
+            border-radius: 30px;
+            border: 1px dashed #dccfc4;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #b09a8a;
+            font-size: 16px;
+        }
+
+        @media (max-width: 700px) {
+            .app-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .app-header h1 {
+                font-size: 20px;
+            }
+            .app-header h1 span {
+                display: block;
+                margin-left: 0;
+                font-size: 13px;
+            }
+            .search-box input {
+                width: 120px;
+            }
+            .category-tabs button {
+                padding: 5px 12px;
+                font-size: 12px;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .card-actions button {
+                font-size: 12px;
+                padding: 3px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-box input {
+                width: 100px;
+            }
+            .card-title {
+                font-size: 15px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f0e8e0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbb8aa;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b09a8a;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <h1>🎵 幼儿音乐欣赏 <span>复习助手 · 2026</span></h1>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="搜曲名、作者…" />
+            <button id="searchBtn">🔍</button>
+        </div>
+    </header>
+
+    <nav class="category-tabs" id="categoryTabs">
+        <button data-cat="all" class="active">📚 全部</button>
+        <button data-cat="中国歌曲">🇨🇳 中国歌曲</button>
+        <button data-cat="外国歌曲">🌍 外国歌曲</button>
+        <button data-cat="器乐曲">🎻 器乐曲</button>
+        <button data-cat="戏曲">🎭 戏曲</button>
+        <button data-cat="外国音乐作品欣赏">🎼 外国名作</button>
+    </nav>
+
+    <div class="stats" id="stats">共 <strong id="totalCount">0</strong> 首曲目</div>
+
+    <div class="card-grid" id="cardGrid"></div>
+
+    <script>
+        // ======================================================================
+        //  数据 —— 包含详细解析范例
+        // ======================================================================
+
+        const MUSIC_DATA = [{
+            id: 'c01',
+            title: '拔根芦柴花',
+            category: '中国歌曲',
+            composer: '江苏民歌',
+            genre: '民间小调',
+            instruments: '二胡、笛子、扬琴等',
+            structure: '单一部曲式，重复性乐句',
+            mood: '欢快、活泼，充满水乡生活气息',
+            rhythm: '2/4拍，中速，节奏明快',
+            melody: '旋律流畅，带有江南水乡的柔美与灵动',
+            region: '江苏里下河地区',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=拔根芦柴花' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=拔根芦柴花' }]
+        }, {
+            id: 'c02',
+            title: '小白菜',
+            category: '中国歌曲',
+            composer: '河北民歌',
+            genre: '叙事性民歌',
+            instruments: '无特定，常以人声清唱或民乐伴奏',
+            structure: '多段体，每段四句',
+            mood: '凄凉、哀伤，表现孤儿之苦',
+            rhythm: '2/4拍，舒缓，带有悲切感',
+            melody: '旋律下行，音域较窄，质朴感人',
+            region: '河北',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=小白菜 民歌' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=小白菜 河北民歌' }]
+        }, {
+            id: 'c03',
+            title: '茉莉花',
+            category: '中国歌曲',
+            composer: '江苏民歌',
+            genre: '抒情小调',
+            instruments: '二胡、琵琶、笛子等',
+            structure: '单二部曲式，起承转合',
+            mood: '优美、婉转，清新雅致',
+            rhythm: '2/4拍，中速，节奏平稳',
+            melody: '旋律委婉流畅，具有江南水乡的柔美',
+            region: '江苏、浙江一带',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=茉莉花 民歌' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=茉莉花 江苏民歌' }],
+            // 详细解析范例（手写深度内容）
+            detailedNotes: '《茉莉花》是中国最具代表性的江南民歌之一，起源于江苏扬州一带。歌曲以茉莉花为象征，借花抒情，表达了细腻含蓄的情感。音乐采用五声音阶，旋律婉转流畅，具有典型的“鱼咬尾”发展手法，即前一句的尾音与后一句的起音相同，使得乐句环环相扣、连绵不绝。在幼儿欣赏教学中，可引导孩子用“闻花香”的轻柔动作感受乐曲的柔美气质，同时辨识二胡与琵琶的音色差异，并尝试用“lu”音轻声哼唱主旋律，培养对民族调式的初步感知。'
+        }, {
+            id: 'c04',
+            title: '落水天',
+            category: '中国歌曲',
+            composer: '广东民歌',
+            genre: '客家山歌',
+            instruments: '无特定，常以独唱或对唱',
+            structure: '单乐段，上下句结构',
+            mood: '质朴、深情，略带伤感',
+            rhythm: '自由节奏，散板风格',
+            melody: '旋律高亢悠长，音程跳跃大',
+            region: '广东客家地区',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=落水天 民歌' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=落水天 广东民歌' }]
+        }, {
+            id: 'c05',
+            title: '太阳出来喜洋洋',
+            category: '中国歌曲',
+            composer: '四川民歌',
+            genre: '山歌',
+            instruments: '无特定，常以男声独唱',
+            structure: '单乐段，多衬词',
+            mood: '欢快、豪放，充满劳动热情',
+            rhythm: '2/4拍，中速稍快，节奏铿锵',
+            melody: '旋律高亢明亮，多用四度、五度跳进',
+            region: '四川',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=太阳出来喜洋洋 民歌' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=太阳出来喜洋洋 四川民歌' }]
+        }, {
+            id: 'c06',
+            title: '跑马溜溜的山上（康定情歌）',
+            category: '中国歌曲',
+            composer: '四川民歌',
+            genre: '情歌',
+            instruments: '无特定，常以民乐伴奏',
+            structure: '单二部曲式，上下句',
+            mood: '深情、奔放，充满爱意',
+            rhythm: '2/4拍，中速，节奏自由',
+            melody: '旋律优美，音域宽广，具有藏族民歌风格',
+            region: '四川康定',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=康定情歌' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=康定情歌' }]
+        }, {
+            id: 'c07',
+            title: '半个月亮爬上来',
+            category: '中国歌曲',
+            composer: '维吾尔族民歌',
+            genre: '抒情歌曲',
+            instruments: '无特定，常以无伴奏合唱',
+            structure: '单二部曲式',
+            mood: '宁静、柔美，充满夜色诗意',
+            rhythm: '3/4拍，中速，舒缓',
+            melody: '旋律优美流畅，具有西域风格',
+            region: '新疆',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=半个月亮爬上来' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=半个月亮爬上来' }]
+        }, {
+            id: 'c08',
+            title: '掀起你的盖头来',
+            category: '中国歌曲',
+            composer: '维吾尔族民歌',
+            genre: '舞曲风格',
+            instruments: '手鼓、冬不拉等',
+            structure: '多段体，重复性乐句',
+            mood: '欢快、幽默，充满喜庆气氛',
+            rhythm: '2/4拍，快板，节奏鲜明',
+            melody: '旋律活泼，带有典型的维吾尔族音调',
+            region: '新疆',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=掀起你的盖头来' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=掀起你的盖头来' }]
+        }, {
+            id: 'c09',
+            title: '青春舞曲',
+            category: '中国歌曲',
+            composer: '维吾尔族民歌 / 王洛宾改编',
+            genre: '舞曲',
+            instruments: '手鼓、弹拨尔等',
+            structure: '单二部曲式，反复',
+            mood: '热情、欢快，充满青春活力',
+            rhythm: '2/4拍，快板，节奏强烈',
+            melody: '旋律简洁明快，音域不宽，朗朗上口',
+            region: '新疆',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=青春舞曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=青春舞曲' }]
+        }, {
+            id: 'c10',
+            title: '达坂城的姑娘',
+            category: '中国歌曲',
+            composer: '维吾尔族民歌 / 王洛宾改编',
+            genre: '叙事性民歌',
+            instruments: '手鼓、都塔尔等',
+            structure: '单二部曲式',
+            mood: '风趣、诙谐，充满异域风情',
+            rhythm: '2/4拍，中速，节奏灵动',
+            melody: '旋律起伏较大，带有西域音调',
+            region: '新疆',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=达坂城的姑娘' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=达坂城的姑娘' }]
+        }, {
+            id: 'c11',
+            title: '阿拉木汗',
+            category: '中国歌曲',
+            composer: '维吾尔族民歌',
+            genre: '舞曲',
+            instruments: '手鼓、热瓦普等',
+            structure: '单二部曲式，反复',
+            mood: '欢快、活泼，赞美姑娘',
+            rhythm: '2/4拍，快板，节奏明快',
+            melody: '旋律轻快，具有鲜明的维吾尔族风格',
+            region: '新疆',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=阿拉木汗' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=阿拉木汗' }]
+        }, {
+            id: 'c12',
+            title: '玛依拉',
+            category: '中国歌曲',
+            composer: '哈萨克族民歌',
+            genre: '抒情民歌',
+            instruments: '冬不拉等',
+            structure: '单二部曲式',
+            mood: '热情、豪迈，赞美姑娘玛依拉',
+            rhythm: '2/4拍，中速，节奏舒展',
+            melody: '旋律开阔，音域较宽，具有草原气息',
+            region: '新疆哈萨克族地区',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=玛依拉 民歌' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=玛依拉 哈萨克族' }]
+        }, {
+            id: 'c13',
+            title: '北京的金山上',
+            category: '中国歌曲',
+            composer: '藏族民歌',
+            genre: '藏族民歌',
+            instruments: '扎木聂等',
+            structure: '单乐段，反复',
+            mood: '崇敬、深情，歌颂之情',
+            rhythm: '2/4拍，中速，节奏平稳',
+            melody: '旋律高亢悠扬，具有藏族音乐特色',
+            region: '西藏',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=北京的金山上' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=北京的金山上' }]
+        }, {
+            id: 'c14',
+            title: '歌唱二小放牛郎',
+            category: '中国歌曲',
+            composer: '李劫夫 曲',
+            genre: '叙事歌曲',
+            instruments: '无特定，常以童声或混声合唱',
+            structure: '多段体，叙事性结构',
+            mood: '悲壮、崇敬，缅怀小英雄',
+            rhythm: '2/4拍，中速，节奏凝重',
+            melody: '旋律质朴，带有民歌风格，感人至深',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=歌唱二小放牛郎' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=歌唱二小放牛郎' }]
+        }, {
+            id: 'c15',
+            title: '黄河大合唱',
+            category: '中国歌曲',
+            composer: '冼星海 曲',
+            genre: '合唱套曲',
+            instruments: '管弦乐队、钢琴等',
+            structure: '大型合唱套曲，多乐章',
+            mood: '气势磅礴，慷慨激昂，民族精神',
+            rhythm: '多变，从舒缓到急速',
+            melody: '旋律宽广，充满力量感',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=黄河大合唱' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=黄河大合唱' }]
+        }, {
+            id: 'f01',
+            title: '樱花',
+            category: '外国歌曲',
+            composer: '日本民歌',
+            genre: '日本民谣',
+            instruments: '无特定，常以三味线、尺八伴奏',
+            structure: '单乐段，重复性乐句',
+            mood: '优雅、含蓄，带有淡淡的哀愁',
+            rhythm: '4/4拍，中速，节奏平稳',
+            melody: '旋律采用日本五声音阶，独特韵味',
+            region: '日本',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=樱花 日本民歌' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=樱花 日本民歌' }]
+        }, {
+            id: 'f02',
+            title: '小白船',
+            category: '外国歌曲',
+            composer: '朝鲜民歌',
+            genre: '童谣',
+            instruments: '无特定，常以童声合唱',
+            structure: '单二部曲式',
+            mood: '宁静、梦幻，充满童趣',
+            rhythm: '3/4拍，中速，摇曳感',
+            melody: '旋律优美流畅，带有朝鲜族风格',
+            region: '朝鲜半岛',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=小白船 朝鲜民歌' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=小白船 朝鲜民歌' }]
+        }, {
+            id: 'f03',
+            title: '美丽的西班牙女郎',
+            category: '外国歌曲',
+            composer: '意大利歌曲',
+            genre: '舞曲风格',
+            instruments: '吉他、响板等',
+            structure: '单二部曲式，反复',
+            mood: '热情、奔放，充满西班牙风情',
+            rhythm: '3/4拍，中速，节奏明快',
+            melody: '旋律华丽，带有西班牙音调',
+            region: '意大利/西班牙',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=美丽的西班牙女郎' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=美丽的西班牙女郎' }]
+        }, {
+            id: 'f04',
+            title: '莫斯科郊外的晚上',
+            category: '外国歌曲',
+            composer: '苏联歌曲',
+            genre: '抒情歌曲',
+            instruments: '无特定，常以手风琴伴奏',
+            structure: '单二部曲式',
+            mood: '深情、宁静，充满浪漫气息',
+            rhythm: '4/4拍，中速，舒缓',
+            melody: '旋律优美，具有俄罗斯民族风格',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=莫斯科郊外的晚上' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=莫斯科郊外的晚上' }]
+        }, {
+            id: 'f05',
+            title: '友谊天长地久',
+            category: '外国歌曲',
+            composer: '苏格兰民歌',
+            genre: '抒情歌曲',
+            instruments: '风笛等',
+            structure: '单二部曲式',
+            mood: '深情、怀念，歌颂友谊',
+            rhythm: '4/4拍，中速，舒缓',
+            melody: '旋律悠扬，具有苏格兰特色',
+            region: '苏格兰',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=友谊天长地久' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=友谊天长地久' }]
+        }, {
+            id: 'f06',
+            title: '伏尔加船夫曲',
+            category: '外国歌曲',
+            composer: '俄罗斯民歌',
+            genre: '劳动号子',
+            instruments: '无特定，常以男声合唱',
+            structure: '单乐段，反复',
+            mood: '深沉、悲壮，表现船夫的艰辛',
+            rhythm: '2/4拍，中速，节奏沉重',
+            melody: '旋律下行，音域较窄，充满力量感',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=伏尔加船夫曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=伏尔加船夫曲' }]
+        }, {
+            id: 'f07',
+            title: '红河谷',
+            category: '外国歌曲',
+            composer: '加拿大民歌',
+            genre: '抒情民歌',
+            instruments: '无特定，常以吉他伴奏',
+            structure: '单二部曲式',
+            mood: '深情、怀旧，充满思乡之情',
+            rhythm: '4/4拍，中速，舒缓',
+            melody: '旋律简单优美，朗朗上口',
+            region: '加拿大',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=红河谷 民歌' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=红河谷 加拿大民歌' }]
+        }, {
+            id: 'f08',
+            title: '三套车',
+            category: '外国歌曲',
+            composer: '俄罗斯民歌',
+            genre: '叙事民歌',
+            instruments: '无特定，常以手风琴伴奏',
+            structure: '单二部曲式',
+            mood: '忧伤、深沉，表现底层人民的苦难',
+            rhythm: '4/4拍，中速，节奏沉重',
+            melody: '旋律低沉，音域较宽，充满悲情',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=三套车' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=三套车' }]
+        }, {
+            id: 'f09',
+            title: '桔梗谣',
+            category: '外国歌曲',
+            composer: '朝鲜民歌',
+            genre: '民谣',
+            instruments: '伽倻琴、长鼓等',
+            structure: '单二部曲式，反复',
+            mood: '欢快、活泼，充满生活情趣',
+            rhythm: '3/4拍，中速，节奏明快',
+            melody: '旋律流畅，具有朝鲜族音乐特色',
+            region: '朝鲜半岛',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=桔梗谣' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=桔梗谣' }]
+        }, {
+            id: 'f10',
+            title: '哎哟妈妈',
+            category: '外国歌曲',
+            composer: '印尼民歌',
+            genre: '民谣',
+            instruments: '昂格隆等',
+            structure: '单二部曲式',
+            mood: '欢快、幽默，充满生活气息',
+            rhythm: '2/4拍，中速，节奏活泼',
+            melody: '旋律轻快，具有印尼音乐特色',
+            region: '印度尼西亚',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=哎哟妈妈' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=哎哟妈妈 印尼' }]
+        }, {
+            id: 'f11',
+            title: '杀鸭宰鸡（印尼）',
+            category: '外国歌曲',
+            composer: '印尼民歌',
+            genre: '民谣',
+            instruments: '昂格隆、竹笛等',
+            structure: '单乐段，反复',
+            mood: '欢快、活泼，充满生活情趣',
+            rhythm: '2/4拍，快板，节奏鲜明',
+            melody: '旋律跳跃，具有印尼风格',
+            region: '印度尼西亚',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=杀鸭宰鸡 印尼' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=杀鸭宰鸡 印尼' }]
+        }, {
+            id: 'f12',
+            title: '红蜻蜓',
+            category: '外国歌曲',
+            composer: '日本歌曲',
+            genre: '童谣',
+            instruments: '无特定，常以童声合唱',
+            structure: '单二部曲式',
+            mood: '怀旧、温馨，充满童年回忆',
+            rhythm: '3/4拍，中速，舒缓',
+            melody: '旋律优美，具有日本风格',
+            region: '日本',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=红蜻蜓 日本童谣' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=红蜻蜓 日本' }]
+        }, {
+            id: 'f13',
+            title: '星星索',
+            category: '外国歌曲',
+            composer: '印尼民歌',
+            genre: '划船曲',
+            instruments: '吉他、昂格隆等',
+            structure: '单二部曲式',
+            mood: '宁静、悠远，充满思念之情',
+            rhythm: '4/4拍，中速，摇曳感',
+            melody: '旋律优美流畅，具有印尼风格',
+            region: '印度尼西亚',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=星星索' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=星星索' }]
+        }, {
+            id: 'f14',
+            title: '划船歌（印尼）',
+            category: '外国歌曲',
+            composer: '印尼民歌',
+            genre: '劳动歌曲',
+            instruments: '无特定，常以合唱',
+            structure: '单乐段，反复',
+            mood: '欢快、有力，表现划船劳动',
+            rhythm: '2/4拍，中速，节奏整齐',
+            melody: '旋律简洁有力，具有印尼风格',
+            region: '印度尼西亚',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=划船歌 印尼' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=划船歌 印尼' }]
+        }, {
+            id: 'f15',
+            title: '桑塔露琪亚',
+            category: '外国歌曲',
+            composer: '意大利民歌',
+            genre: '船歌',
+            instruments: '曼陀林、吉他等',
+            structure: '单二部曲式',
+            mood: '优美、浪漫，充满意大利风情',
+            rhythm: '6/8拍，中速，摇曳感',
+            melody: '旋律流畅，具有拿波里民歌风格',
+            region: '意大利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=桑塔露琪亚' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=桑塔露琪亚' }]
+        }, {
+            id: 'f16',
+            title: '牧童',
+            category: '外国歌曲',
+            composer: '捷克民歌',
+            genre: '童谣',
+            instruments: '无特定，常以童声合唱',
+            structure: '单二部曲式',
+            mood: '欢快、天真，充满乡村气息',
+            rhythm: '2/4拍，中速，节奏活泼',
+            melody: '旋律轻快，具有捷克民歌风格',
+            region: '捷克',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=牧童 捷克民歌' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=牧童 捷克民歌' }]
+        }, {
+            id: 'f17',
+            title: '哆来咪',
+            category: '外国歌曲',
+            composer: '美国歌曲（音乐之声插曲）',
+            genre: '音乐剧歌曲',
+            instruments: '无特定，常以人声',
+            structure: '单二部曲式，重复',
+            mood: '欢快、活泼，充满趣味',
+            rhythm: '2/4拍，中速，节奏明快',
+            melody: '旋律简单易学，朗朗上口',
+            region: '美国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=哆来咪 音乐之声' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=哆来咪 音乐之声' }]
+        }, {
+            id: 'q01',
+            title: '二泉映月',
+            category: '器乐曲',
+            composer: '华彦钧（阿炳）',
+            genre: '二胡独奏曲',
+            instruments: '二胡',
+            structure: '变奏体，六段式',
+            mood: '悲凉、深沉，如泣如诉',
+            rhythm: '散板与4/4拍交替，自由而哀婉',
+            melody: '旋律凄美，音域宽广，富有感染力',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=二泉映月 二胡' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=二泉映月' }],
+            detailedNotes: '《二泉映月》是中国民族音乐的不朽经典，由民间音乐家华彦钧（阿炳）创作。乐曲以无锡惠山“天下第二泉”为意境，借景抒情，表达了作者对坎坷人生的深切感慨与不屈精神。音乐采用变奏手法，将一段简短的主题通过五次变奏层层展开，情绪由平静沉思逐步推向悲愤激昂。二胡的演奏大量运用滑音、颤音，模拟人声的哭泣与叹息，极具感染力。在幼儿欣赏中，可借助月光、泉水等画面引导孩子感受音乐的“讲述感”，并尝试用简单的线条画来表现旋律的起伏变化，培养对民族器乐深沉音色的审美能力。'
+        }, {
+            id: 'q02',
+            title: '金蛇狂舞',
+            category: '器乐曲',
+            composer: '聂耳 曲',
+            genre: '民族管弦乐',
+            instruments: '民族管弦乐队',
+            structure: '三段体，快-慢-快',
+            mood: '热烈、欢腾，节日气氛',
+            rhythm: '2/4拍，快板，节奏鲜明',
+            melody: '旋律流畅，具有民间锣鼓风格',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=金蛇狂舞 聂耳' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=金蛇狂舞' }]
+        }, {
+            id: 'q03',
+            title: '翠湖春晓',
+            category: '器乐曲',
+            composer: '聂耳 曲',
+            genre: '民族管弦乐',
+            instruments: '民族管弦乐队',
+            structure: '单二部曲式',
+            mood: '清新、明快，春意盎然',
+            rhythm: '2/4拍，中速，节奏灵动',
+            melody: '旋律优美流畅，描绘春日湖景',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=翠湖春晓 聂耳' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=翠湖春晓' }]
+        }, {
+            id: 'q04',
+            title: '瑶族舞曲',
+            category: '器乐曲',
+            composer: '刘铁山、茅沅 曲',
+            genre: '民族管弦乐',
+            instruments: '民族管弦乐队',
+            structure: '复三部曲式',
+            mood: '欢快、热烈，展现瑶族风情',
+            rhythm: '2/4拍，快板，节奏强烈',
+            melody: '旋律具有瑶族音乐特色，优美动听',
+            region: '中国瑶族地区',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=瑶族舞曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=瑶族舞曲' }]
+        }, {
+            id: 'q05',
+            title: '春江花月夜',
+            category: '器乐曲',
+            composer: '古曲',
+            genre: '民族管弦乐',
+            instruments: '民族管弦乐队',
+            structure: '变奏体，多段连缀',
+            mood: '典雅、恬静，诗情画意',
+            rhythm: '2/4拍，中速，舒缓',
+            melody: '旋律优美婉转，具有古典韵味',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=春江花月夜 古曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=春江花月夜' }]
+        }, {
+            id: 'q06',
+            title: '花好月圆',
+            category: '器乐曲',
+            composer: '黄贻钧 曲',
+            genre: '民族管弦乐',
+            instruments: '民族管弦乐队',
+            structure: '单三部曲式',
+            mood: '欢快、喜庆，祥和美满',
+            rhythm: '2/4拍，中速，节奏轻快',
+            melody: '旋律流畅，具有江南丝竹风格',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=花好月圆 民族管弦乐' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=花好月圆 民乐' }]
+        }, {
+            id: 'q07',
+            title: '梁祝（小提琴协奏曲）',
+            category: '器乐曲',
+            composer: '何占豪、陈钢 曲',
+            genre: '小提琴协奏曲',
+            instruments: '小提琴、管弦乐队',
+            structure: '奏鸣曲式，单乐章',
+            mood: '深情、凄美，爱情主题',
+            rhythm: '多变，从抒情到激昂',
+            melody: '旋律优美感人，具有越剧风格',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=梁祝 小提琴协奏曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=梁祝 小提琴协奏曲' }],
+            detailedNotes: '《梁祝》小提琴协奏曲由何占豪、陈钢创作于1959年，取材于家喻户晓的民间传说。作品采用西洋奏鸣曲式与中国越剧唱腔相结合的手法，实现了“中西合璧”。乐曲以“相爱—抗婚—化蝶”为主线，其中“楼台会”片段小提琴与大提琴的深情对答，象征着梁山伯与祝英台的凄美对话。华彩乐段运用了京剧的紧拉慢唱技法，将悲剧推向高潮。在幼儿音乐欣赏中，可选取“爱情主题”与“化蝶”片段，引导孩子用丝巾飞舞的动作感受旋律的优美与飘逸，体会音乐讲述故事的能力。'
+        }, {
+            id: 'q08',
+            title: '阿细跳月',
+            category: '器乐曲',
+            composer: '彝族民间乐曲',
+            genre: '民族管弦乐',
+            instruments: '民族管弦乐队',
+            structure: '复三部曲式',
+            mood: '欢快、热烈，彝族风情',
+            rhythm: '2/4拍，快板，节奏鲜明',
+            melody: '旋律跳跃，具有彝族音乐特色',
+            region: '云南彝族地区',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=阿细跳月' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=阿细跳月' }]
+        }, {
+            id: 'q09',
+            title: '赶花会',
+            category: '器乐曲',
+            composer: '民间乐曲',
+            genre: '民族管弦乐',
+            instruments: '民族管弦乐队',
+            structure: '单二部曲式',
+            mood: '欢快、热闹，节日氛围',
+            rhythm: '2/4拍，中速，节奏活泼',
+            melody: '旋律流畅，具有民间小调风格',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=赶花会 民乐' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=赶花会' }]
+        }, {
+            id: 'q10',
+            title: '牧童短笛',
+            category: '器乐曲',
+            composer: '贺绿汀 曲',
+            genre: '钢琴独奏',
+            instruments: '钢琴',
+            structure: '单三部曲式',
+            mood: '清新、悠扬，田园风光',
+            rhythm: '2/4拍，中速，节奏自由',
+            melody: '旋律优美，具有江南民歌风格',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=牧童短笛 贺绿汀' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=牧童短笛' }]
+        }, {
+            id: 'q11',
+            title: '森吉德玛',
+            category: '器乐曲',
+            composer: '蒙古族民歌',
+            genre: '民族管弦乐',
+            instruments: '民族管弦乐队',
+            structure: '单二部曲式',
+            mood: '深情、辽阔，草原气息',
+            rhythm: '2/4拍，中速，舒展',
+            melody: '旋律宽广悠扬，具有蒙古族风格',
+            region: '内蒙古',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=森吉德玛' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=森吉德玛' }]
+        }, {
+            id: 'q12',
+            title: '百鸟朝凤',
+            category: '器乐曲',
+            composer: '民间乐曲',
+            genre: '唢呐独奏',
+            instruments: '唢呐',
+            structure: '变奏体，多段连缀',
+            mood: '欢快、热闹，百鸟争鸣',
+            rhythm: '2/4拍，快板，节奏丰富',
+            melody: '旋律模仿各种鸟鸣，技巧高超',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=百鸟朝凤 唢呐' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=百鸟朝凤 唢呐' }]
+        }, {
+            id: 'q13',
+            title: '赛马',
+            category: '器乐曲',
+            composer: '黄海怀 曲',
+            genre: '二胡独奏',
+            instruments: '二胡',
+            structure: '单三部曲式',
+            mood: '热烈、奔放，赛马场景',
+            rhythm: '2/4拍，快板，节奏急促',
+            melody: '旋律激昂，具有蒙古族音乐风格',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=赛马 二胡' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=赛马 二胡' }]
+        }, {
+            id: 'q14',
+            title: '京调',
+            category: '器乐曲',
+            composer: '京剧曲牌',
+            genre: '民族管弦乐',
+            instruments: '民族管弦乐队',
+            structure: '单二部曲式',
+            mood: '热烈、欢快，京剧韵味',
+            rhythm: '2/4拍，快板，节奏鲜明',
+            melody: '旋律具有京剧音乐特色',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=京调 民乐' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=京调' }]
+        }, {
+            id: 'x01',
+            title: '黄梅戏《对花》',
+            category: '戏曲',
+            composer: '黄梅戏传统唱段',
+            genre: '戏曲唱段',
+            instruments: '二胡、板鼓等',
+            structure: '对唱形式，上下句',
+            mood: '欢快、活泼，生活气息浓厚',
+            rhythm: '2/4拍，中速，节奏明快',
+            melody: '旋律婉转，具有黄梅戏特色',
+            region: '安徽',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=对花 黄梅戏' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=对花 黄梅戏' }]
+        }, {
+            id: 'x02',
+            title: '豫剧《花木兰》',
+            category: '戏曲',
+            composer: '豫剧传统唱段',
+            genre: '戏曲唱段',
+            instruments: '板胡、锣鼓等',
+            structure: '多段体，叙事性',
+            mood: '豪迈、英武，巾帼英雄',
+            rhythm: '2/4拍，中速，节奏铿锵',
+            melody: '旋律高亢，具有豫剧特色',
+            region: '河南',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=花木兰 豫剧' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=花木兰 豫剧' }]
+        }, {
+            id: 'x03',
+            title: '京剧《说唱脸谱》',
+            category: '戏曲',
+            composer: '京剧唱段',
+            genre: '戏曲唱段',
+            instruments: '京胡、锣鼓等',
+            structure: '单二部曲式',
+            mood: '热烈、夸张，脸谱艺术',
+            rhythm: '2/4拍，中速，节奏鲜明',
+            melody: '旋律具有京剧韵味，朗朗上口',
+            region: '中国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=说唱脸谱 京剧' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=说唱脸谱' }]
+        }, {
+            id: 'w01',
+            title: '动物狂欢节 · 引子与狮王进行曲',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '威严、雄壮，狮王登场',
+            rhythm: '4/4拍，进行曲速度',
+            melody: '旋律庄严，低音弦乐表现狮王步伐',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 狮王' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 狮王' }]
+        }, {
+            id: 'w02',
+            title: '动物狂欢节 · 母鸡和公鸡',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '管弦乐队',
+            structure: '单二部曲式',
+            mood: '活泼、诙谐，模仿鸡叫',
+            rhythm: '2/4拍，快板',
+            melody: '旋律模仿母鸡咯咯声和公鸡打鸣',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 母鸡公鸡' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 母鸡公鸡' }]
+        }, {
+            id: 'w03',
+            title: '动物狂欢节 · 驴子',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '管弦乐队',
+            structure: '单二部曲式',
+            mood: '滑稽、笨拙，驴子奔跑',
+            rhythm: '2/4拍，快板',
+            melody: '旋律跳跃，表现驴子笨拙奔跑',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 驴子' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 驴子' }]
+        }, {
+            id: 'w04',
+            title: '动物狂欢节 · 乌龟',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '管弦乐队',
+            structure: '单二部曲式',
+            mood: '缓慢、笨重，乌龟爬行',
+            rhythm: '4/4拍，极慢',
+            melody: '旋律取自奥芬巴赫《天堂与地狱序曲》',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 乌龟' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 乌龟' }]
+        }, {
+            id: 'w05',
+            title: '动物狂欢节 · 大象',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '低音弦乐、钢琴',
+            structure: '单三部曲式',
+            mood: '沉重、笨拙，大象起舞',
+            rhythm: '3/4拍，圆舞曲速度',
+            melody: '低音旋律表现大象的笨重舞步',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 大象' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 大象' }]
+        }, {
+            id: 'w06',
+            title: '动物狂欢节 · 袋鼠',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '钢琴',
+            structure: '单二部曲式',
+            mood: '轻巧、跳跃，袋鼠蹦跳',
+            rhythm: '2/4拍，快板',
+            melody: '钢琴跳跃音型表现袋鼠的弹跳',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 袋鼠' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 袋鼠' }]
+        }, {
+            id: 'w07',
+            title: '动物狂欢节 · 水族馆',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '管弦乐队、钢琴',
+            structure: '单二部曲式',
+            mood: '梦幻、神秘，水底世界',
+            rhythm: '6/8拍，中速',
+            melody: '旋律流畅，钢琴与管弦交织表现水流',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 水族馆' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 水族馆' }]
+        }, {
+            id: 'w08',
+            title: '动物狂欢节 · 长耳朵的角色',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '小提琴',
+            structure: '单二部曲式',
+            mood: '诙谐、夸张，驴叫',
+            rhythm: '自由节奏',
+            melody: '小提琴模仿驴叫，幽默风趣',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 长耳朵' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 长耳朵' }]
+        }, {
+            id: 'w09',
+            title: '动物狂欢节 · 树林中的杜鹃',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '钢琴、单簧管',
+            structure: '单二部曲式',
+            mood: '宁静、自然，杜鹃啼鸣',
+            rhythm: '2/4拍，中速',
+            melody: '单簧管模仿杜鹃鸟叫，钢琴伴奏',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 杜鹃' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 杜鹃' }]
+        }, {
+            id: 'w10',
+            title: '动物狂欢节 · 鸟笼',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '长笛、钢琴',
+            structure: '单二部曲式',
+            mood: '欢快、轻盈，鸟儿嬉戏',
+            rhythm: '2/4拍，快板',
+            melody: '长笛快速音型模仿鸟鸣',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 鸟笼' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 鸟笼' }]
+        }, {
+            id: 'w11',
+            title: '动物狂欢节 · 钢琴家',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '钢琴',
+            structure: '单二部曲式',
+            mood: '幽默、讽刺，笨拙的钢琴家',
+            rhythm: '2/4拍，中速',
+            melody: '钢琴音阶练习，讽刺机械式演奏',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 钢琴家' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 钢琴家' }]
+        }, {
+            id: 'w12',
+            title: '动物狂欢节 · 化石',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '管弦乐队、木琴',
+            structure: '单二部曲式',
+            mood: '诙谐、诡异，骷髅之舞',
+            rhythm: '2/4拍，快板',
+            melody: '引用德国民歌《骷髅之舞》，木琴清脆',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 化石' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 化石' }]
+        }, {
+            id: 'w13',
+            title: '动物狂欢节 · 天鹅',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '大提琴、钢琴',
+            structure: '单二部曲式',
+            mood: '优雅、宁静，天鹅游弋',
+            rhythm: '6/8拍，中速，舒缓',
+            melody: '大提琴优美旋律，钢琴伴奏如波光',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 天鹅' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 天鹅' }]
+        }, {
+            id: 'w14',
+            title: '动物狂欢节 · 终曲',
+            category: '外国音乐作品欣赏',
+            composer: '圣桑',
+            genre: '管弦乐组曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '欢快、热烈，动物狂欢',
+            rhythm: '2/4拍，快板，节奏强烈',
+            melody: '旋律活泼，综合前面各主题',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=动物狂欢节 终曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=动物狂欢节 终曲' }]
+        }, {
+            id: 'w15',
+            title: '康康舞曲',
+            category: '外国音乐作品欣赏',
+            composer: '奥芬巴赫',
+            genre: '舞曲',
+            instruments: '管弦乐队',
+            structure: '单二部曲式，反复',
+            mood: '热烈、欢快，充满活力',
+            rhythm: '2/4拍，快板，节奏强烈',
+            melody: '旋律跳跃，富有动感',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=康康舞曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=康康舞曲' }]
+        }, {
+            id: 'w16',
+            title: '蓝色多瑙河圆舞曲',
+            category: '外国音乐作品欣赏',
+            composer: '小约翰·施特劳斯',
+            genre: '圆舞曲',
+            instruments: '管弦乐队',
+            structure: '维也纳圆舞曲式',
+            mood: '优雅、华丽，多瑙河风光',
+            rhythm: '3/4拍，圆舞曲速度',
+            melody: '旋律优美流畅，被誉为"奥地利第二国歌"',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=蓝色多瑙河' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=蓝色多瑙河' }]
+        }, {
+            id: 'w17',
+            title: '胡桃夹子 · 小序曲（进行曲）',
+            category: '外国音乐作品欣赏',
+            composer: '柴可夫斯基',
+            genre: '芭蕾舞剧序曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '轻快、活泼，充满童话色彩',
+            rhythm: '2/4拍，进行曲速度',
+            melody: '旋律明快，主题鲜明',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=胡桃夹子 序曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=胡桃夹子 序曲' }]
+        }, {
+            id: 'w18',
+            title: '胡桃夹子 · 木偶进行曲',
+            category: '外国音乐作品欣赏',
+            composer: '柴可夫斯基',
+            genre: '芭蕾舞剧选段',
+            instruments: '管弦乐队',
+            structure: '单三部曲式',
+            mood: '欢快、童趣，木偶列队',
+            rhythm: '2/4拍，进行曲速度',
+            melody: '旋律轻快，富有儿童趣味',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=胡桃夹子 木偶进行曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=胡桃夹子 木偶进行曲' }]
+        }, {
+            id: 'w19',
+            title: '胡桃夹子 · 糖果仙子舞曲',
+            category: '外国音乐作品欣赏',
+            composer: '柴可夫斯基',
+            genre: '芭蕾舞剧选段',
+            instruments: '管弦乐队、钢片琴',
+            structure: '单三部曲式',
+            mood: '梦幻、甜蜜，糖果王国',
+            rhythm: '2/4拍，中速',
+            melody: '钢片琴清脆音色，旋律优美',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=糖果仙子舞曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=糖果仙子舞曲' }]
+        }, {
+            id: 'w20',
+            title: '胡桃夹子 · 俄罗斯特列帕克舞曲',
+            category: '外国音乐作品欣赏',
+            composer: '柴可夫斯基',
+            genre: '芭蕾舞剧选段',
+            instruments: '管弦乐队',
+            structure: '单三部曲式',
+            mood: '热烈、奔放，俄罗斯风格',
+            rhythm: '2/4拍，快板，节奏强烈',
+            melody: '旋律具有俄罗斯民族特色',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=特列帕克 胡桃夹子' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=特列帕克' }]
+        }, {
+            id: 'w21',
+            title: '胡桃夹子 · 咖啡（阿拉伯舞曲）',
+            category: '外国音乐作品欣赏',
+            composer: '柴可夫斯基',
+            genre: '芭蕾舞剧选段',
+            instruments: '管弦乐队',
+            structure: '单二部曲式',
+            mood: '神秘、异域，阿拉伯风情',
+            rhythm: '4/4拍，中速，舒缓',
+            melody: '旋律带有阿拉伯音调',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=阿拉伯舞曲 胡桃夹子' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=阿拉伯舞曲 胡桃夹子' }]
+        }, {
+            id: 'w22',
+            title: '胡桃夹子 · 茶（中国之舞）',
+            category: '外国音乐作品欣赏',
+            composer: '柴可夫斯基',
+            genre: '芭蕾舞剧选段',
+            instruments: '管弦乐队',
+            structure: '单二部曲式',
+            mood: '欢快、活泼，中国风格',
+            rhythm: '2/4拍，快板',
+            melody: '旋律带有中国五声音阶风格',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=中国之舞 胡桃夹子' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=中国之舞 胡桃夹子' }]
+        }, {
+            id: 'w23',
+            title: '胡桃夹子 · 芦笛舞曲',
+            category: '外国音乐作品欣赏',
+            composer: '柴可夫斯基',
+            genre: '芭蕾舞剧选段',
+            instruments: '管弦乐队',
+            structure: '单三部曲式',
+            mood: '轻快、田园，牧笛吹奏',
+            rhythm: '2/4拍，中速',
+            melody: '长笛旋律优美，如牧笛声',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=芦笛舞曲 胡桃夹子' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=芦笛舞曲' }]
+        }, {
+            id: 'w24',
+            title: '胡桃夹子 · 百花圆舞曲',
+            category: '外国音乐作品欣赏',
+            composer: '柴可夫斯基',
+            genre: '芭蕾舞剧选段',
+            instruments: '管弦乐队',
+            structure: '圆舞曲式',
+            mood: '华丽、优雅，百花盛开',
+            rhythm: '3/4拍，圆舞曲速度',
+            melody: '旋律优美流畅，气势恢宏',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=百花圆舞曲 胡桃夹子' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=百花圆舞曲' }]
+        }, {
+            id: 'w25',
+            title: '睡美人圆舞曲',
+            category: '外国音乐作品欣赏',
+            composer: '柴可夫斯基',
+            genre: '芭蕾舞剧选段',
+            instruments: '管弦乐队',
+            structure: '圆舞曲式',
+            mood: '优美、典雅，童话氛围',
+            rhythm: '3/4拍，圆舞曲速度',
+            melody: '旋律华丽，充满浪漫气息',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=睡美人圆舞曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=睡美人圆舞曲' }]
+        }, {
+            id: 'w26',
+            title: '四小天鹅舞',
+            category: '外国音乐作品欣赏',
+            composer: '柴可夫斯基',
+            genre: '芭蕾舞剧选段',
+            instruments: '管弦乐队',
+            structure: '单三部曲式',
+            mood: '轻快、活泼，小天鹅起舞',
+            rhythm: '2/4拍，中速，轻快',
+            melody: '旋律简洁明快，脍炙人口',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=四小天鹅舞' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=四小天鹅舞' }]
+        }, {
+            id: 'w27',
+            title: '欢乐颂（第九交响曲）',
+            category: '外国音乐作品欣赏',
+            composer: '贝多芬',
+            genre: '交响曲',
+            instruments: '管弦乐队、合唱',
+            structure: '奏鸣曲式，合唱乐章',
+            mood: '庄严、激昂，欢乐颂歌',
+            rhythm: '4/4拍，中速',
+            melody: '旋律宽广，充满力量与希望',
+            region: '德国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=欢乐颂 贝多芬' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=欢乐颂 贝多芬' }]
+        }, {
+            id: 'w28',
+            title: '小步舞曲（贝多芬）',
+            category: '外国音乐作品欣赏',
+            composer: '贝多芬',
+            genre: '小步舞曲',
+            instruments: '钢琴或管弦乐',
+            structure: '复三部曲式',
+            mood: '优雅、端庄，古典风格',
+            rhythm: '3/4拍，中速',
+            melody: '旋律典雅，节奏平稳',
+            region: '德国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=小步舞曲 贝多芬' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=小步舞曲 贝多芬' }]
+        }, {
+            id: 'w29',
+            title: '命运交响曲',
+            category: '外国音乐作品欣赏',
+            composer: '贝多芬',
+            genre: '交响曲',
+            instruments: '管弦乐队',
+            structure: '奏鸣曲式，四乐章',
+            mood: '激昂、悲壮，与命运抗争',
+            rhythm: '2/4拍，快板，节奏强烈',
+            melody: '著名"命运敲门"动机',
+            region: '德国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=命运交响曲 贝多芬' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=命运交响曲' }]
+        }, {
+            id: 'w30',
+            title: '升c小调月光奏鸣曲',
+            category: '外国音乐作品欣赏',
+            composer: '贝多芬',
+            genre: '奏鸣曲',
+            instruments: '钢琴',
+            structure: '奏鸣曲式，三乐章',
+            mood: '忧郁、深沉，月光意境',
+            rhythm: '4/4拍，慢板，舒缓',
+            melody: '旋律如泣如诉，充满诗意',
+            region: '德国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=月光奏鸣曲 贝多芬' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=月光奏鸣曲' }]
+        }, {
+            id: 'w31',
+            title: '致爱丽丝',
+            category: '外国音乐作品欣赏',
+            composer: '贝多芬',
+            genre: '钢琴小品',
+            instruments: '钢琴',
+            structure: '回旋曲式',
+            mood: '温柔、亲切，充满爱意',
+            rhythm: '3/4拍，中速，舒缓',
+            melody: '旋律优美，简单而感人',
+            region: '德国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=致爱丽丝 贝多芬' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=致爱丽丝' }]
+        }, {
+            id: 'w32',
+            title: '惊愕交响曲',
+            category: '外国音乐作品欣赏',
+            composer: '海顿',
+            genre: '交响曲',
+            instruments: '管弦乐队',
+            structure: '奏鸣曲式，四乐章',
+            mood: '幽默、戏剧性，惊愕效果',
+            rhythm: '2/4拍，变奏',
+            melody: '主题简单，突然强奏形成惊愕',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=惊愕交响曲 海顿' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=惊愕交响曲' }]
+        }, {
+            id: 'w33',
+            title: '土耳其进行曲（莫扎特）',
+            category: '外国音乐作品欣赏',
+            composer: '莫扎特',
+            genre: '钢琴曲',
+            instruments: '钢琴',
+            structure: '回旋曲式',
+            mood: '欢快、活泼，土耳其风格',
+            rhythm: '2/4拍，快板，节奏鲜明',
+            melody: '旋律带有土耳其军乐风格',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=土耳其进行曲 莫扎特' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=土耳其进行曲 莫扎特' }]
+        }, {
+            id: 'w34',
+            title: '小星星变奏曲',
+            category: '外国音乐作品欣赏',
+            composer: '莫扎特',
+            genre: '钢琴变奏曲',
+            instruments: '钢琴',
+            structure: '主题与变奏',
+            mood: '天真、活泼，童趣盎然',
+            rhythm: '4/4拍，中速',
+            melody: '旋律简单，变奏丰富',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=小星星变奏曲 莫扎特' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=小星星变奏曲' }]
+        }, {
+            id: 'w35',
+            title: 'G大调弦乐小夜曲',
+            category: '外国音乐作品欣赏',
+            composer: '莫扎特',
+            genre: '小夜曲',
+            instruments: '弦乐队',
+            structure: '奏鸣曲式，四乐章',
+            mood: '优雅、欢快，古典风格',
+            rhythm: '4/4拍，中速',
+            melody: '旋律优美，充满活力',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=G大调弦乐小夜曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=G大调弦乐小夜曲' }]
+        }, {
+            id: 'w36',
+            title: 'D大调回旋曲',
+            category: '外国音乐作品欣赏',
+            composer: '莫扎特',
+            genre: '回旋曲',
+            instruments: '钢琴',
+            structure: '回旋曲式',
+            mood: '轻快、明朗，活泼',
+            rhythm: '2/4拍，快板',
+            melody: '旋律流畅，主题多次回旋',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=D大调回旋曲 莫扎特' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=D大调回旋曲' }]
+        }, {
+            id: 'w37',
+            title: '小步舞曲（莫扎特）',
+            category: '外国音乐作品欣赏',
+            composer: '莫扎特',
+            genre: '小步舞曲',
+            instruments: '钢琴或管弦乐',
+            structure: '复三部曲式',
+            mood: '优雅、端庄，宫廷风格',
+            rhythm: '3/4拍，中速',
+            melody: '旋律典雅，节奏平稳',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=小步舞曲 莫扎特' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=小步舞曲 莫扎特' }]
+        }, {
+            id: 'w38',
+            title: '摇篮曲（勃拉姆斯）',
+            category: '外国音乐作品欣赏',
+            composer: '勃拉姆斯',
+            genre: '摇篮曲',
+            instruments: '钢琴、人声',
+            structure: '单二部曲式',
+            mood: '温柔、宁静，母爱温暖',
+            rhythm: '3/4拍，中速，舒缓',
+            melody: '旋律柔和，充满爱意',
+            region: '德国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=摇篮曲 勃拉姆斯' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=摇篮曲 勃拉姆斯' }]
+        }, {
+            id: 'w39',
+            title: '摇篮曲（舒伯特）',
+            category: '外国音乐作品欣赏',
+            composer: '舒伯特',
+            genre: '摇篮曲',
+            instruments: '钢琴、人声',
+            structure: '单二部曲式',
+            mood: '安详、温暖，静谧',
+            rhythm: '2/4拍，中速，舒缓',
+            melody: '旋律简单优美，恬静',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=摇篮曲 舒伯特' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=摇篮曲 舒伯特' }]
+        }, {
+            id: 'w40',
+            title: '匈牙利狂想曲第二号',
+            category: '外国音乐作品欣赏',
+            composer: '李斯特',
+            genre: '狂想曲',
+            instruments: '钢琴',
+            structure: '自由曲式，拉科奇进行曲风格',
+            mood: '热烈、奔放，匈牙利民族风格',
+            rhythm: '2/4拍，快板，节奏多变',
+            melody: '旋律具有匈牙利民间音乐特色',
+            region: '匈牙利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=匈牙利狂想曲第二号' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=匈牙利狂想曲第二号' }]
+        }, {
+            id: 'w41',
+            title: '卡门序曲',
+            category: '外国音乐作品欣赏',
+            composer: '比才',
+            genre: '歌剧序曲',
+            instruments: '管弦乐队',
+            structure: '奏鸣曲式',
+            mood: '热烈、奔放，西班牙风情',
+            rhythm: '2/4拍，快板，节奏强烈',
+            melody: '旋律具有西班牙音乐特色',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=卡门序曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=卡门序曲' }]
+        }, {
+            id: 'w42',
+            title: '彼得与狼（交响童话）',
+            category: '外国音乐作品欣赏',
+            composer: '普罗科菲耶夫',
+            genre: '交响童话',
+            instruments: '管弦乐队、旁白',
+            structure: '叙述性结构，多段',
+            mood: '生动、趣味，角色鲜明',
+            rhythm: '多变，配合角色',
+            melody: '各角色主题鲜明，乐器刻画',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=彼得与狼 普罗科菲耶夫' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=彼得与狼' }]
+        }, {
+            id: 'w43',
+            title: '梦幻曲',
+            category: '外国音乐作品欣赏',
+            composer: '舒曼',
+            genre: '钢琴曲',
+            instruments: '钢琴',
+            structure: '单三部曲式',
+            mood: '梦幻、柔美，诗意',
+            rhythm: '4/4拍，中速，舒缓',
+            melody: '旋律优美，如诗如画',
+            region: '德国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=梦幻曲 舒曼' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=梦幻曲 舒曼' }]
+        }, {
+            id: 'w44',
+            title: '单簧管波尔卡',
+            category: '外国音乐作品欣赏',
+            composer: '普罗修斯卡',
+            genre: '波尔卡',
+            instruments: '单簧管、管弦乐队',
+            structure: '单三部曲式',
+            mood: '欢快、活泼，舞曲风格',
+            rhythm: '2/4拍，快板，节奏鲜明',
+            melody: '单簧管旋律轻快流畅',
+            region: '波兰',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=单簧管波尔卡' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=单簧管波尔卡' }]
+        }, {
+            id: 'w45',
+            title: '加速度圆舞曲',
+            category: '外国音乐作品欣赏',
+            composer: '约翰·施特劳斯',
+            genre: '圆舞曲',
+            instruments: '管弦乐队',
+            structure: '圆舞曲式',
+            mood: '热烈、欢快，速度渐快',
+            rhythm: '3/4拍，圆舞曲速度',
+            melody: '旋律优美，节奏越来越快',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=加速度圆舞曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=加速度圆舞曲' }]
+        }, {
+            id: 'w46',
+            title: '挪威舞曲',
+            category: '外国音乐作品欣赏',
+            composer: '格里格',
+            genre: '舞曲',
+            instruments: '管弦乐队',
+            structure: '单三部曲式',
+            mood: '欢快、质朴，挪威民间风格',
+            rhythm: '2/4拍，中速，节奏轻快',
+            melody: '旋律具有挪威民间音乐特色',
+            region: '挪威',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=挪威舞曲 格里格' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=挪威舞曲' }]
+        }, {
+            id: 'w47',
+            title: '加沃特舞曲',
+            category: '外国音乐作品欣赏',
+            composer: '戈塞克',
+            genre: '舞曲',
+            instruments: '管弦乐队',
+            structure: '单二部曲式',
+            mood: '轻快、典雅，法国风格',
+            rhythm: '4/4拍，中速',
+            melody: '旋律流畅，节奏轻快',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=加沃特舞曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=加沃特舞曲' }]
+        }, {
+            id: 'w48',
+            title: '铁匠波尔卡',
+            category: '外国音乐作品欣赏',
+            composer: '约翰·施特劳斯',
+            genre: '波尔卡',
+            instruments: '管弦乐队',
+            structure: '单三部曲式',
+            mood: '欢快、活泼，铁匠节奏',
+            rhythm: '2/4拍，快板',
+            melody: '旋律轻快，模仿铁锤敲击',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=铁匠波尔卡' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=铁匠波尔卡' }]
+        }, {
+            id: 'w49',
+            title: '啤酒桶波尔卡',
+            category: '外国音乐作品欣赏',
+            composer: '约翰·施特劳斯',
+            genre: '波尔卡',
+            instruments: '管弦乐队',
+            structure: '单三部曲式',
+            mood: '欢快、热闹，啤酒节气氛',
+            rhythm: '2/4拍，快板',
+            melody: '旋律轻快，富有节奏感',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=啤酒桶波尔卡' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=啤酒桶波尔卡' }]
+        }, {
+            id: 'w50',
+            title: '匈牙利舞曲第五号',
+            category: '外国音乐作品欣赏',
+            composer: '勃拉姆斯',
+            genre: '舞曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '热烈、奔放，匈牙利风格',
+            rhythm: '2/4拍，快板，节奏强烈',
+            melody: '旋律具有匈牙利民间音乐特色',
+            region: '德国/匈牙利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=匈牙利舞曲第五号' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=匈牙利舞曲第五号' }]
+        }, {
+            id: 'w51',
+            title: '小猫圆舞曲',
+            category: '外国音乐作品欣赏',
+            composer: '安德森',
+            genre: '圆舞曲',
+            instruments: '管弦乐队',
+            structure: '单三部曲式',
+            mood: '幽默、俏皮，小猫跳舞',
+            rhythm: '3/4拍，圆舞曲速度',
+            melody: '旋律模仿小猫叫声，幽默风趣',
+            region: '美国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=小猫圆舞曲 安德森' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=小猫圆舞曲' }]
+        }, {
+            id: 'w52',
+            title: '口哨与小狗',
+            category: '外国音乐作品欣赏',
+            composer: '安德森',
+            genre: '管弦乐小品',
+            instruments: '管弦乐队、口哨',
+            structure: '单三部曲式',
+            mood: '欢快、活泼，人与狗玩耍',
+            rhythm: '2/4拍，中速',
+            melody: '口哨旋律轻快，趣味十足',
+            region: '美国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=口哨与小狗' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=口哨与小狗' }]
+        }, {
+            id: 'w53',
+            title: '拉德斯基进行曲',
+            category: '外国音乐作品欣赏',
+            composer: '老约翰·施特劳斯',
+            genre: '进行曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '激昂、振奋，军队气势',
+            rhythm: '2/4拍，进行曲速度',
+            melody: '旋律雄壮，节奏有力',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=拉德斯基进行曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=拉德斯基进行曲' }]
+        }, {
+            id: 'w54',
+            title: '军队进行曲（舒伯特）',
+            category: '外国音乐作品欣赏',
+            composer: '舒伯特',
+            genre: '进行曲',
+            instruments: '钢琴或管弦乐',
+            structure: '复三部曲式',
+            mood: '威武、雄壮，军队步伐',
+            rhythm: '2/4拍，进行曲速度',
+            melody: '旋律有力，节奏整齐',
+            region: '奥地利',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=军队进行曲 舒伯特' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=军队进行曲 舒伯特' }]
+        }, {
+            id: 'w55',
+            title: '玩具兵进行曲',
+            category: '外国音乐作品欣赏',
+            composer: '耶塞尔',
+            genre: '进行曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '欢快、童趣，玩具兵列队',
+            rhythm: '2/4拍，进行曲速度',
+            melody: '旋律轻快，充满儿童趣味',
+            region: '德国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=玩具兵进行曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=玩具兵进行曲' }]
+        }, {
+            id: 'w56',
+            title: '龙骑兵进行曲',
+            category: '外国音乐作品欣赏',
+            composer: '苏萨',
+            genre: '进行曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '激昂、雄壮，骑兵风采',
+            rhythm: '2/4拍，进行曲速度',
+            melody: '旋律有力，节奏鲜明',
+            region: '美国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=龙骑兵进行曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=龙骑兵进行曲' }]
+        }, {
+            id: 'w57',
+            title: '拨弦曲（德里布）',
+            category: '外国音乐作品欣赏',
+            composer: '德里布',
+            genre: '拨弦乐',
+            instruments: '弦乐队（拨弦）',
+            structure: '单二部曲式',
+            mood: '轻快、活泼，拨弦效果',
+            rhythm: '2/4拍，中速',
+            melody: '旋律由拨弦演奏，音色独特',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=拨弦曲 德里布' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=拨弦曲 德里布' }]
+        }, {
+            id: 'w58',
+            title: '马刀进行曲',
+            category: '外国音乐作品欣赏',
+            composer: '哈恰图良',
+            genre: '进行曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '激烈、奔放，马刀舞',
+            rhythm: '2/4拍，快板，节奏强烈',
+            melody: '旋律激昂，具有亚美尼亚风格',
+            region: '亚美尼亚/苏联',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=马刀进行曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=马刀进行曲' }]
+        }, {
+            id: 'w59',
+            title: '匈牙利进行曲',
+            category: '外国音乐作品欣赏',
+            composer: '柏辽兹',
+            genre: '进行曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '雄壮、豪迈，匈牙利风格',
+            rhythm: '2/4拍，进行曲速度',
+            melody: '旋律具有匈牙利民间音乐特色',
+            region: '法国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=匈牙利进行曲 柏辽兹' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=匈牙利进行曲' }]
+        }, {
+            id: 'w60',
+            title: '巡逻兵进行曲',
+            category: '外国音乐作品欣赏',
+            composer: '米查姆',
+            genre: '进行曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '轻快、诙谐，巡逻兵步伐',
+            rhythm: '2/4拍，进行曲速度',
+            melody: '旋律轻快，带有幽默感',
+            region: '美国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=巡逻兵进行曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=巡逻兵进行曲' }]
+        }, {
+            id: 'w61',
+            title: '西班牙斗牛士进行曲',
+            category: '外国音乐作品欣赏',
+            composer: '玛奎纳',
+            genre: '进行曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '激昂、勇猛，斗牛士精神',
+            rhythm: '2/4拍，进行曲速度',
+            melody: '旋律具有西班牙风格，雄壮有力',
+            region: '西班牙',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=西班牙斗牛士进行曲' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=西班牙斗牛士进行曲' }]
+        }, {
+            id: 'w62',
+            title: '野蜂飞舞',
+            category: '外国音乐作品欣赏',
+            composer: '里姆斯基-科萨科夫',
+            genre: '管弦乐小品',
+            instruments: '管弦乐队',
+            structure: '单二部曲式',
+            mood: '急速、激烈，野蜂飞舞',
+            rhythm: '2/4拍，急板，节奏飞快',
+            melody: '旋律急速流转，模仿野蜂飞行',
+            region: '俄罗斯',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=野蜂飞舞' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=野蜂飞舞' }]
+        }, {
+            id: 'w63',
+            title: '土耳其进行曲（贝多芬）',
+            category: '外国音乐作品欣赏',
+            composer: '贝多芬',
+            genre: '进行曲',
+            instruments: '管弦乐队',
+            structure: '复三部曲式',
+            mood: '欢快、活泼，土耳其风格',
+            rhythm: '2/4拍，进行曲速度',
+            melody: '旋律带有土耳其军乐风格',
+            region: '德国',
+            links: [{ platform: '网易云', url: 'https://music.163.com/#/search/m/?s=土耳其进行曲 贝多芬' },
+            { platform: 'B站', url: 'https://search.bilibili.com/all?keyword=土耳其进行曲 贝多芬' }]
+        }];
+
+        // ======================================================================
+        //  渲染逻辑
+        // ======================================================================
+
+        let currentCategory = 'all';
+        let searchKeyword = '';
+
+        const grid = document.getElementById('cardGrid');
+        const totalSpan = document.getElementById('totalCount');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const tabs = document.querySelectorAll('#categoryTabs button');
+
+        function getFilteredData() {
+            return MUSIC_DATA.filter(item => {
+                const matchCat = currentCategory === 'all' || item.category === currentCategory;
+                const kw = searchKeyword.trim().toLowerCase();
+                const matchSearch = !kw ||
+                    item.title.toLowerCase().includes(kw) ||
+                    item.composer.toLowerCase().includes(kw) ||
+                    item.category.includes(kw);
+                return matchCat && matchSearch;
+            });
+        }
+
+        // 智能生成详细解析（回退方案）
+        function generateDetailedNotes(item) {
+            if (item.detailedNotes) return item.detailedNotes;
+            const composerText = (item.composer && item.composer !== '作者不详') ? `由${item.composer}创作` :
+                `流传于${item.region || '民间'}`;
+            const genreText = item.genre || '一首经典音乐作品';
+            const instrumentText = item.instruments ? `以${item.instruments}为主` : '以多种乐器演绎';
+            const structureText = item.structure || '常规曲式结构';
+            const moodText = item.mood || '情绪丰富多变';
+            const rhythmText = item.rhythm || '节奏富有特色';
+            const melodyText = item.melody || '旋律优美动听';
+            const regionText = item.region ? `${item.region}地区` : '其地域';
+            const firstInstrument = item.instruments ? item.instruments.split('、')[0] : '主奏乐器';
+
+            return `《${item.title}》是${genreText}，${composerText}。演奏上${instrumentText}，采用${structureText}。全曲情绪${moodText}，节奏${rhythmText}，旋律${melodyText}。在幼儿音乐欣赏教学中，可重点引导幼儿感受${regionText}的音乐风格，辨识${firstInstrument}的音色特点，并尝试用身体律动或简单图谱来表现音乐中的节奏变化与情绪起伏，培养幼儿对音乐要素的敏锐感知力。`;
+        }
+
+        function render() {
+            const filtered = getFilteredData();
+            totalSpan.textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="empty-state">😕 没有找到匹配的曲目，试试其他关键词吧</div>`;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(item => {
+                const tags = [];
+                if (item.genre) tags.push(item.genre);
+                if (item.instruments) tags.push(item.instruments.split('、')[0]);
+                if (item.region) tags.push(item.region);
+
+                let composerDisplay = item.composer || '作者不详';
+
+                // 原风格要点
+                const detailItems = [
+                    { label: '体裁', value: item.genre || '—' },
+                    { label: '乐器', value: item.instruments || '—' },
+                    { label: '曲式', value: item.structure || '—' },
+                    { label: '情绪', value: item.mood || '—' },
+                    { label: '节奏', value: item.rhythm || '—' },
+                    { label: '旋律', value: item.melody || '—' },
+                    { label: '地域', value: item.region || '—' },
+                ];
+
+                let detailHtml = detailItems
+                    .filter(d => d.value && d.value !== '—')
+                    .map(d => `<div class="detail-item"><span class="d-label">${d.label}</span><span class="d-value">${d.value}</span></div>`)
+                    .join('');
+
+                // 详细解析（高级）
+                const advancedText = generateDetailedNotes(item);
+
+                // 链接
+                let linksHtml = '';
+                if (item.links && item.links.length > 0) {
+                    item.links.forEach(link => {
+                        linksHtml +=
+                            `<a href="${link.url}" target="_blank" rel="noopener">▶ ${link.platform}</a>`;
+                    });
+                } else {
+                    linksHtml = `<span class="local-hint">🎧 可在网易云/B站搜索试听</span>`;
+                }
+
+                html += `
+                    <div class="music-card" data-id="${item.id}">
+                        <div class="card-top">
+                            <div class="card-title">${item.title}</div>
+                            <span class="card-badge">${item.category}</span>
+                        </div>
+                        <div class="card-composer">
+                            <span class="label">✏️</span> ${composerDisplay}
+                        </div>
+                        <div class="card-tags">
+                            ${tags.map(t => `<span>${t}</span>`).join('')}
+                        </div>
+
+                        <div class="card-actions">
+                            <button class="btn-style card-detail-toggle" data-target="${item.id}">
+                                📖 风格要点
+                            </button>
+                            <button class="btn-detail card-advanced-toggle" data-target="${item.id}">
+                                ✨ 详细解析
+                            </button>
+                        </div>
+
+                        <!-- 原有风格要点 -->
+                        <div class="card-detail" id="detail-${item.id}">
+                            ${detailHtml}
+                            <div class="card-links">
+                                ${linksHtml}
+                            </div>
+                        </div>
+
+                        <!-- 新增详细解析 -->
+                        <div class="card-advanced" id="advanced-${item.id}">
+                            <span class="adv-label">📝 深度复习笔记</span>
+                            <p class="adv-text">${advancedText}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+
+            // 绑定原有风格要点切换
+            document.querySelectorAll('.card-detail-toggle').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const targetId = this.dataset.target;
+                    const detail = document.getElementById(`detail-${targetId}`);
+                    if (detail) {
+                        detail.classList.toggle('open');
+                        this.textContent = detail.classList.contains('open') ? '📕 收起要点' : '📖 风格要点';
+                    }
+                });
+            });
+
+            // 绑定新增详细解析切换
+            document.querySelectorAll('.card-advanced-toggle').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const targetId = this.dataset.target;
+                    const adv = document.getElementById(`advanced-${targetId}`);
+                    if (adv) {
+                        adv.classList.toggle('open');
+                        this.textContent = adv.classList.contains('open') ? '📕 收起解析' : '✨ 详细解析';
+                    }
+                });
+            });
+        }
+
+        function doSearch() {
+            searchKeyword = searchInput.value;
+            render();
+        }
+
+        searchBtn.addEventListener('click', doSearch);
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') doSearch();
+        });
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentCategory = this.dataset.cat;
+                render();
+            });
+        });
+
+        render();
+        console.log('🎵 幼儿音乐欣赏 · 复习助手已加载，共 ' + MUSIC_DATA.length + ' 首曲目');
+    </script>
+
+</body>
+</html>
